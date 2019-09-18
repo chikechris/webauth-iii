@@ -10,7 +10,7 @@ function generateToken (user) {
   const secret = process.env.SECRET
 
   const options = {
-    expires: '1d'
+    expiresIn: '2h'
   }
 
   return jwt.sign(payload, secret, options)
@@ -20,7 +20,36 @@ function findBy (filter) {
   return db('users').where(filter)
 }
 
+function findAll () {
+  return db('users').select('username', 'department')
+}
+
+function findByDepartment (department) {
+  return db('users')
+    .where(department)
+    .select('username', 'department')
+}
+
+function add (user) {
+  return db('users')
+    .insert(user, 'id')
+    .then(ids => {
+      const [id] = ids
+      return id
+    })
+}
+
+function findDepartmentById (id) {
+  return db('users')
+    .where(id)
+    .select('department')
+}
+
 module.exports = {
   findBy,
-  generateToken
+  generateToken,
+  add,
+  findAll,
+  findByDepartment,
+  findDepartmentById
 }
